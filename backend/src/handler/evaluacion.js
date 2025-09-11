@@ -45,17 +45,22 @@ export const crearEvaluacion = async (req, res) => {
 };
 
 export const getEvaluacionesByDocente = async (req, res) => {
-    try {
-        const { id_docente } = req.params;
+    const id_docente = parseInt(req.params.id_docente, 10);
+    
+    if (!id_docente) {
+        return res.status(400).json({ msg: "ID de docente inválido" });
+    }
 
+    try {
         const evaluaciones = await Evaluacion.findAll({
             where: { id_docente },
-            include: [DetalleEvaluacion, Comentario]
+            include: [
+                { model: DetalleEvaluacion },
+                { model: Comentario }
+            ]
         });
-
-        return res.status(200).json(evaluaciones);
+        res.status(200).json(evaluaciones);
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: "Error al obtener las evaluaciones" });
+        res.status(500).json({ msg: error.message });
     }
 };
