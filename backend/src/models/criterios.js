@@ -11,7 +11,7 @@ const Criterio = db.define("Criterio", {
         type: DataTypes.STRING(100),
         allowNull: false
     },
-    description: {
+    descripcion: {
         type: DataTypes.TEXT,
         allowNull: true
     },
