@@ -64,6 +64,20 @@ export const getCriteriosById = async (id_criterio) => {
     }
 }
 
+export const createEvaluacion = async (id_docente, data) => {
+    try {
+        const response = await fetch (`http://localhost:3000/api/docentes/${id_docente}/evaluaciones`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Error al crear la evaluación');
+        return await response.json();
+    } catch (error) {
+        return { error: error.message };
+    }
+}
+
 export const getEvaluacionesByDocente = async (id_docente) => {
     try {
         const response = await fetch(`http://localhost:3000/api/docentes/${id_docente}/evaluaciones`, {
