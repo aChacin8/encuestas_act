@@ -11,7 +11,7 @@ export const getDocentes = async (req, res) => {
 }
 
 export const getDocenteById = async (req, res) => {
-    const { id_docente } = req.params;
+    const { id_docente } = req.params;  
     try {
         const docente = await Docente.findOne({where: {id_docente, activo: true}})
         if (!docente){
