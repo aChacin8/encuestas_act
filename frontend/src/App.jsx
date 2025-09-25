@@ -1,14 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router';
-import DocentList from './components/DocentList';
-import DocentDetail from './pages/DocentDetail';
+
+import RoutesIndex from './routes/RoutesIndex';
 
 function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<DocentList />} />
-        <Route path="/docentes/:id" element={<DocentDetail />} />
-      </Routes>
+      <RoutesIndex/>
     </BrowserRouter>
   );
 }

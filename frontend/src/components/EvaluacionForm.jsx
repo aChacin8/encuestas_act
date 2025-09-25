@@ -1,9 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { createEvaluacion } from "../utils/index";
 
 const EvaluacionForm = ({ criterios, docenteId, EvaluacionGuardada }) => {
   const [respuestas, setRespuestas] = useState({});
   const [mensaje, setMensaje] = useState("");
+  const [codigoEstudiante, setCodigoEstudiante] = useState("");
+
+useEffect(() => {
+  const alumnoStr = localStorage.getItem("alumno");
+  console.log("Alumno en localStorage:", alumnoStr); // 👀
+  if (alumnoStr) {
+    const alumno = JSON.parse(alumnoStr);
+    console.log("Alumno parseado:", alumno); // 👀
+    if (alumno?.codigo_estudiante) {
+      setCodigoEstudiante(alumno.codigo_estudiante);
+    }
+  }
+}, []);
+
+
+
 
   const handleChange = (criterioId, value) => {
     setRespuestas({
@@ -14,15 +30,20 @@ const EvaluacionForm = ({ criterios, docenteId, EvaluacionGuardada }) => {
 
   const calcularPromedio = () => {
     const valores = Object.values(respuestas);
-
     if (valores.length === 0) return 0;
-
     const suma = valores.reduce((acc, curr) => acc + curr, 0);
     return (suma / valores.length).toFixed(2);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  console.log("Submit disparado", { docenteId, codigoEstudiante, respuestas });
+
+  if (!codigoEstudiante) {
+    console.log("No hay alumno logueado");
+    setMensaje("❌ No se ha identificado el alumno logueado.");
+    return;
+  }
 
     const detalles = Object.entries(respuestas).map(([id_criterio, puntaje]) => ({
       id_criterio: Number(id_criterio),
@@ -30,10 +51,10 @@ const EvaluacionForm = ({ criterios, docenteId, EvaluacionGuardada }) => {
     }));
 
     const nuevaEvaluacion = {
-      codigo_estudiante: "A001",
+      codigo_estudiante: codigoEstudiante,
       id_docente: docenteId,
-      id_periodo: 1, //
-      id_encuesta: null, // 
+      id_periodo: 1,
+      id_encuesta: null,
       detalles,
     };
 

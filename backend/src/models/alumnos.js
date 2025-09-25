@@ -17,7 +17,7 @@ const Alumno = db.define("Alumno", {
         allowNull: false 
     },
     fecha_nacimiento: { 
-        type: DataTypes.DATEONLY,
+        type: DataTypes.STRING(200),
         allowNull: false 
     }
 }, {

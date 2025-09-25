@@ -1,11 +1,18 @@
 import {Routes, Route} from 'react-router';
-import Home from '../pages/Home';
+
+import DocenteList from '../components/DocentList';
+import DocentDetail from '../pages/DocentDetail';
+import SignUp from '../pages/SignUp';
+import Login from '../pages/Login';
 
 const RoutesIndex = () => {
     return (
-        <Routes>
-            <Route path='/' element={<Home/>} />
-        </Routes>   
+       <Routes>
+        <Route path='/alumnos' element={<SignUp/>}/>
+        <Route path='/alumnos/login' element={<Login/>}/>
+        <Route path="/docentes" element={<DocenteList />} />
+        <Route path="/docentes/:id" element={<DocentDetail />} />
+      </Routes>
     );
 }
 

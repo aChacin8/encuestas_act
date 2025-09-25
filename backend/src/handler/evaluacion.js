@@ -3,9 +3,18 @@ import DetalleEvaluacion from "../models/detalle_evaluacion.js";
 import Criterio from "../models/criterios.js";
 // import Comentario from "../models/comentarios.js"; 
 
-export const crearEvaluacion = async (req, res) => {
+export const createEvaluacion = async (req, res) => {
+    console.log("HEADERS", req.headers);
+console.log("TOKEN", req.headers.authorization);
+console.log("CODIGO ESTUDIANTE", req.codigo_estudiante);
+
     try {
-        const { codigo_estudiante, id_docente, id_periodo, id_encuesta, detalles } = req.body;
+        const { id_docente, id_periodo, id_encuesta, detalles } = req.body;
+        const codigo_estudiante = req.codigo_estudiante; // lo obtenemos del token
+
+        if (!codigo_estudiante) {
+            return res.status(401).json({ msg: "No se ha identificado el alumno logueado." });
+        }
 
         const evaluacion = await Evaluacion.create({
             codigo_estudiante,
