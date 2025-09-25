@@ -1,10 +1,11 @@
 import Evaluacion from "../models/evaluacion.js";
 import DetalleEvaluacion from "../models/detalle_evaluacion.js";
-import Comentario from "../models/comentarios.js";
+import Criterio from "../models/criterios.js";
+// import Comentario from "../models/comentarios.js"; 
 
 export const crearEvaluacion = async (req, res) => {
     try {
-        const { codigo_estudiante, id_docente, id_periodo, id_encuesta, detalles, comentario } = req.body;
+        const { codigo_estudiante, id_docente, id_periodo, id_encuesta, detalles } = req.body;
 
         const evaluacion = await Evaluacion.create({
             codigo_estudiante,
@@ -15,32 +16,56 @@ export const crearEvaluacion = async (req, res) => {
             fecha_evaluacion: new Date()
         });
 
+        let totalPonderado = 0;
+        let sumaPesos = 0;
+
         if (detalles && Array.isArray(detalles)) {
-            await Promise.all(
-                detalles.map(det =>
-                    DetalleEvaluacion.create({
-                        id_evaluacion: evaluacion.id_evaluacion,
-                        id_criterio: det.id_criterio,
-                        puntaje: det.puntaje
-                    })
-                )
-            );
+            for (const det of detalles) {
+                const criterio = await Criterio.findByPk(det.id_criterio);
+                if (!criterio) continue;
+
+                const peso = parseFloat(criterio.peso) || 1; 
+                totalPonderado += det.puntaje * peso;
+                sumaPesos += peso;
+
+                await DetalleEvaluacion.create({
+                    id_evaluacion: evaluacion.id_evaluacion,
+                    id_criterio: det.id_criterio,
+                    puntaje: det.puntaje
+                });
+            }
         }
 
-        if (comentario) {
-            await Comentario.create({
-                id_evaluacion: evaluacion.id_evaluacion,
-                comentario
-            });
-        }
+        const promedio = sumaPesos > 0 ? (totalPonderado / sumaPesos).toFixed(2) : null;
+        evaluacion.puntaje_total = promedio;
+        await evaluacion.save();
+
+        const evaluacionesDocente = await Evaluacion.findAll({
+            where: { id_docente },
+            attributes: ["puntaje_total"]
+        });
+
+        let suma = 0;
+        let count = 0;
+        evaluacionesDocente.forEach(ev => {
+            if (ev.puntaje_total) {
+                suma += parseFloat(ev.puntaje_total);
+                count++;
+            }
+        });
+
+        const promedioGlobal = count > 0 ? (suma / count).toFixed(2) : null;
+        const apto = promedioGlobal !== null && promedioGlobal >= 8;
 
         return res.status(201).json({
             msg: "Evaluación registrada correctamente",
-            evaluacion
+            evaluacion,
+            promedioGlobal,
+            docente_apto: apto ? "Sí puede laborar" : "No cumple con el mínimo requerido"
         });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ msg: "Error al registrar la evaluación" });
+        return res.status(500).json({ msg: "Error al registrar la evaluación", error: error.message });
     }
 };
 
@@ -56,7 +81,6 @@ export const getEvaluacionesByDocente = async (req, res) => {
             where: { id_docente },
             include: [
                 { model: DetalleEvaluacion },
-                { model: Comentario }
             ]
         });
         res.status(200).json(evaluaciones);
