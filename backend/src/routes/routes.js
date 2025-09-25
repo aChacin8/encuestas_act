@@ -5,11 +5,11 @@ import { crearEvaluacion, getEvaluacionesByDocente } from '../handler/evaluacion
 
 const router = express.Router()
 
-router.post('/', crearEvaluacion)
-
 router.get ('/docentes', getDocentes)
 router.get ('/docentes/:id_docente', getDocenteById)
 router.get ('/docentes/:id_docente/evaluaciones', getEvaluacionesByDocente)
+router.post ('/docentes/:id_docente/evaluaciones', crearEvaluacion)
+
 
 router.get ('/criterios', getCriterios)
 router.get ('/criterios/:id_criterio', getCriteriosById)
