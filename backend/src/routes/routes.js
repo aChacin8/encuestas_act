@@ -2,6 +2,7 @@ import express from 'express';
 import { getDocenteById, getDocentes } from '../handler/docentes.js';
 import { getCriterios, getCriteriosById } from '../handler/criterios.js';
 import { crearEvaluacion, getEvaluacionesByDocente } from '../handler/evaluacion.js';
+import { createAlumno, loginAlumno } from '../handler/alumnos.js';
 
 const router = express.Router()
 
@@ -13,5 +14,8 @@ router.post ('/docentes/:id_docente/evaluaciones', crearEvaluacion)
 
 router.get ('/criterios', getCriterios)
 router.get ('/criterios/:id_criterio', getCriteriosById)
+
+router.post ('/alumnos', createAlumno)
+router.post ('/alumnos/login', loginAlumno )
 
 export default router
