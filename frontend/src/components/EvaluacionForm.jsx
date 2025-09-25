@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { crearEvaluacion } from "../utils/index";
+import { useState } from "react";
+import { createEvaluacion } from "../utils/index";
 
-const EvaluacionForm = ({ criterios, docenteId, onEvaluacionGuardada }) => {
+const EvaluacionForm = ({ criterios, docenteId, EvaluacionGuardada }) => {
   const [respuestas, setRespuestas] = useState({});
   const [mensaje, setMensaje] = useState("");
 
@@ -14,7 +14,9 @@ const EvaluacionForm = ({ criterios, docenteId, onEvaluacionGuardada }) => {
 
   const calcularPromedio = () => {
     const valores = Object.values(respuestas);
+
     if (valores.length === 0) return 0;
+
     const suma = valores.reduce((acc, curr) => acc + curr, 0);
     return (suma / valores.length).toFixed(2);
   };
@@ -22,22 +24,25 @@ const EvaluacionForm = ({ criterios, docenteId, onEvaluacionGuardada }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const puntaje_total = calcularPromedio();
+    const detalles = Object.entries(respuestas).map(([id_criterio, puntaje]) => ({
+      id_criterio: Number(id_criterio),
+      puntaje: Number(puntaje),
+    }));
 
     const nuevaEvaluacion = {
+      codigo_estudiante: "A001",
       id_docente: docenteId,
-      codigo_estudiante: "A001", // simulado
-      puntaje_total,
-      completada: true,
-      criterios: respuestas,
+      id_periodo: 1, //
+      id_encuesta: null, // 
+      detalles,
     };
 
-    const result = await crearEvaluacion(nuevaEvaluacion);
+    const result = await createEvaluacion(docenteId, nuevaEvaluacion);
     if (result.error) {
       setMensaje("❌ Error al guardar la evaluación");
     } else {
       setMensaje("✅ Evaluación guardada correctamente");
-      onEvaluacionGuardada(result.evaluacion);
+      EvaluacionGuardada(result.evaluacion);
       setRespuestas({});
     }
   };
@@ -59,9 +64,7 @@ const EvaluacionForm = ({ criterios, docenteId, onEvaluacionGuardada }) => {
                   min="1"
                   max="10"
                   value={respuestas[c.id_criterio] || ""}
-                  onChange={(e) =>
-                    handleChange(c.id_criterio, e.target.value)
-                  }
+                  onChange={(e) => handleChange(c.id_criterio, e.target.value)}
                   required
                 />
               </div>
