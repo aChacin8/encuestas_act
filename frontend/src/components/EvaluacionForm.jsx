@@ -7,19 +7,38 @@ const EvaluacionForm = ({ criterios, docenteId, EvaluacionGuardada }) => {
   const [codigoEstudiante, setCodigoEstudiante] = useState("");
 
 useEffect(() => {
+  console.log("[EvaluacionForm] useEffect montado"); // 👀
   const alumnoStr = localStorage.getItem("alumno");
-  console.log("Alumno en localStorage:", alumnoStr); // 👀
+  console.log("[EvaluacionForm] localStorage.alumno:", alumnoStr); // 👀
   if (alumnoStr) {
-    const alumno = JSON.parse(alumnoStr);
-    console.log("Alumno parseado:", alumno); // 👀
-    if (alumno?.codigo_estudiante) {
-      setCodigoEstudiante(alumno.codigo_estudiante);
+    try {
+      const alumno = JSON.parse(alumnoStr);
+      console.log("[EvaluacionForm] alumno parseado:", alumno); // 👀
+      if (alumno?.codigo_estudiante) {
+        console.log("[EvaluacionForm] codigo_estudiante (de alumno):", alumno.codigo_estudiante); // 👀
+        setCodigoEstudiante(alumno.codigo_estudiante);
+        return;
+      }
+    } catch (e) {
+      console.error("[EvaluacionForm] error parseando alumno:", e); // 👀
+    }
+  }
+
+  const token = localStorage.getItem("token");
+  console.log("[EvaluacionForm] localStorage.token:", token); // 👀
+  if (token) {
+    try {
+      const payload = JSON.parse(atob(token.split(".")[1]));
+      console.log("[EvaluacionForm] payload JWT:", payload); // 👀
+      if (payload?.codigo_estudiante) {
+        console.log("[EvaluacionForm] codigo_estudiante (de token):", payload.codigo_estudiante); // 👀
+        setCodigoEstudiante(payload.codigo_estudiante);
+      }
+    } catch (e) {
+      console.error("[EvaluacionForm] error decodificando token:", e); // 👀
     }
   }
 }, []);
-
-
-
 
   const handleChange = (criterioId, value) => {
     setRespuestas({
@@ -37,36 +56,43 @@ useEffect(() => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  console.log("Submit disparado", { docenteId, codigoEstudiante, respuestas });
+  console.log("[EvaluacionForm.handleSubmit] docenteId:", docenteId); // 👀
+  console.log("[EvaluacionForm.handleSubmit] codigoEstudiante:", codigoEstudiante); // 👀
+  console.log("[EvaluacionForm.handleSubmit] respuestas:", respuestas); // 👀
 
   if (!codigoEstudiante) {
-    console.log("No hay alumno logueado");
+    console.warn("[EvaluacionForm.handleSubmit] No hay alumno logueado"); // 👀
     setMensaje("❌ No se ha identificado el alumno logueado.");
     return;
   }
 
-    const detalles = Object.entries(respuestas).map(([id_criterio, puntaje]) => ({
-      id_criterio: Number(id_criterio),
-      puntaje: Number(puntaje),
-    }));
+  const detalles = Object.entries(respuestas).map(([id_criterio, puntaje]) => ({
+    id_criterio: Number(id_criterio),
+    puntaje: Number(puntaje),
+  }));
+  console.log("[EvaluacionForm.handleSubmit] detalles:", detalles); // 👀
 
-    const nuevaEvaluacion = {
-      codigo_estudiante: codigoEstudiante,
-      id_docente: docenteId,
-      id_periodo: 1,
-      id_encuesta: null,
-      detalles,
-    };
-
-    const result = await createEvaluacion(docenteId, nuevaEvaluacion);
-    if (result.error) {
-      setMensaje("❌ Error al guardar la evaluación");
-    } else {
-      setMensaje("✅ Evaluación guardada correctamente");
-      EvaluacionGuardada(result.evaluacion);
-      setRespuestas({});
-    }
+  const nuevaEvaluacion = {
+    codigo_estudiante: codigoEstudiante,
+    id_docente: docenteId,
+    id_periodo: 1,
+    id_encuesta: null,
+    detalles,
   };
+  console.log("[EvaluacionForm.handleSubmit] nuevaEvaluacion:", nuevaEvaluacion); // 👀
+
+  const result = await createEvaluacion(docenteId, nuevaEvaluacion);
+  console.log("[EvaluacionForm.handleSubmit] resultado createEvaluacion:", result); // 👀
+
+  if (result.error) {
+    setMensaje("❌ Error al guardar la evaluación");
+  } else {
+    setMensaje("✅ Evaluación guardada correctamente");
+    EvaluacionGuardada(result.evaluacion);
+    setRespuestas({});
+  }
+};
+
 
   return (
     <div className="card mb-4">
