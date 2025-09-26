@@ -22,7 +22,9 @@ const SignUp = () => {
                 return;
             }
 
-            alert("Alumno registrado con éxito. Recuerda que tu contraseña será tu fecha de nacimiento.");
+            alert(
+                "Alumno registrado con éxito. Recuerda que tu contraseña será tu fecha de nacimiento."
+            );
             reset();
             navigate("/alumnos/login");
         } catch (error) {
@@ -32,14 +34,15 @@ const SignUp = () => {
     };
 
     return (
-        <>
+        <div className="d-flex justify-content-center align-items-center vh-100 px-3">
             <Card
-                style={{ width: "28rem" }}
-                className="justify-content-center mx-auto mt-5"
-                id="signup"
+                className="shadow-lg w-100"
+                style={{ maxWidth: "450px", backgroundColor: "#f8f9fa" }}
             >
-                <Card.Body className="text-center" id="signup__body">
-                    <Card.Title id="signup__tittle">Registro de Alumno</Card.Title>
+                <Card.Body className="p-4">
+                    <Card.Title className="text-center text-primary mb-4">
+                        Registro de Alumno
+                    </Card.Title>
 
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Form.Group className="mb-3">
@@ -50,7 +53,7 @@ const SignUp = () => {
                                 {...register("codigo_estudiante", {
                                     required: "El código es obligatorio",
                                     pattern: {
-                                        value: /^A\d{3,5}$/, // Empieza con "A" seguido de 3 a 5 dígitos
+                                        value: /^A\d{3,5}$/,
                                         message: "El código debe tener el formato A### (ej: A001)",
                                     },
                                     minLength: {
@@ -66,7 +69,6 @@ const SignUp = () => {
                             {errors.codigo_estudiante && (
                                 <p className="text-danger">{errors.codigo_estudiante.message}</p>
                             )}
-
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -108,23 +110,27 @@ const SignUp = () => {
                             />
                             <p className="text-danger">{errors.fecha_nacimiento?.message}</p>
                             <p style={{ fontSize: "0.9rem", color: "gray" }}>
-                                Tu fecha de nacimiento será tu contraseña para ingresar al sistema (formato AAAA-MM-DD).
+                                Tu fecha de nacimiento será tu contraseña para ingresar al
+                                sistema (formato AAAA-MM-DD).
                             </p>
                         </Form.Group>
 
-
-                        <Button
-                            variant="success"
-                            type="submit"
-                            className="btn btn-outline-primary mt-3"
-                            id="signup__btn"
-                        >
-                            Registrarse
-                        </Button>
+                        <div className="d-grid gap-2">
+                            <Button variant="success" type="submit">
+                                Registrarse
+                            </Button>
+                            <Button
+                                variant="outline-primary"
+                                type="button"
+                                onClick={() => navigate("/alumnos/login")}
+                            >
+                                Ir al Login
+                            </Button>
+                        </div>
                     </Form>
                 </Card.Body>
             </Card>
-        </>
+        </div>
     );
 };
 
