@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import {
   getDocentesById,
   getCriterios,
@@ -8,9 +8,11 @@ import {
 
 import EvaluacionForm from "../components/EvaluacionForm";
 import EvaluacionesPrevias from "../components/EvaluacionesPrevias";
+import { Card, Button, Spinner } from "react-bootstrap";
 
 const DocentDetail = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const [docente, setDocente] = useState(null);
   const [criterios, setCriterios] = useState([]);
@@ -37,39 +39,62 @@ const DocentDetail = () => {
     fetchData();
   }, [id]);
 
-  if (loading) return <p>Cargando información...</p>;
+  if (loading)
+    return (
+      <div className="d-flex justify-content-center align-items-center vh-100">
+        <Spinner animation="border" role="status" className="text-primary">
+          <span className="visually-hidden">Cargando...</span>
+        </Spinner>
+      </div>
+    );
 
   return (
-    <div className="container mt-4">
-      <h2 className="mb-3">Detalle del Docente</h2>
+    <div className="d-flex justify-content-center align-items-start vh-100 px-3 mt-4">
+      <Card
+        className="shadow-lg w-100"
+        style={{ maxWidth: "700px", backgroundColor: "#f8f9fa" }}
+      >
+        <Card.Body className="p-4">
+          <Card.Title className="text-center text-primary mb-4">
+            Detalle del Docente
+          </Card.Title>
 
-      {docente ? (
-        <div className="card mb-4">
-          <div className="card-body">
-            <h5 className="card-title">
-              {docente.nombre_docente} {docente.apellido_docente}
-            </h5>
-            <p className="card-text">
-              <strong>Email:</strong> {docente.email}
-            </p>
-            <p className="card-text">
-              <strong>Departamento:</strong> {docente.departamento}
-            </p>
+          {docente ? (
+            <div className="mb-4">
+              <h5>
+                {docente.nombre_docente} {docente.apellido_docente}
+              </h5>
+              <p>
+                <strong>Email:</strong> {docente.email}
+              </p>
+              <p>
+                <strong>Departamento:</strong> {docente.departamento}
+              </p>
+            </div>
+          ) : (
+            <p className="alert alert-warning">No se encontró el docente</p>
+          )}
+
+          <EvaluacionForm
+            criterios={criterios}
+            docenteId={id}
+            EvaluacionGuardada={(nueva) =>
+              setEvaluaciones([...evaluaciones, nueva])
+            }
+          />
+
+          <EvaluacionesPrevias evaluaciones={evaluaciones} />
+
+          <div className="d-grid mt-4">
+            <Button
+              variant="outline-primary"
+              onClick={() => navigate("/docentes")}
+            >
+              ⬅ Volver a la lista de docentes
+            </Button>
           </div>
-        </div>
-      ) : (
-        <p className="alert alert-warning">No se encontró el docente</p>
-      )}
-
-      <EvaluacionForm
-        criterios={criterios}
-        docenteId={id}
-        onEvaluacionGuardada={(nueva) =>
-          setEvaluaciones([...evaluaciones, nueva])
-        }
-      />
-
-      <EvaluacionesPrevias evaluaciones={evaluaciones} />
+        </Card.Body>
+      </Card>
     </div>
   );
 };
