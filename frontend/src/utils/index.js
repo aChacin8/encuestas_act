@@ -15,22 +15,25 @@ export const createAlumno = async (data) => {
 }
 
 export const loginAlumno = async (data) => {
+    console.log("[loginAlumno] data enviado:", data); // 👀
     try {
         const response = await fetch ('http://localhost:3000/api/alumnos/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            });
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
         
-        if (!response.ok) throw new Error('Error al create el alumno');
-        return await response.json();
-        
+        console.log("[loginAlumno] status:", response.status); // 👀
+        const json = await response.json();
+        console.log("[loginAlumno] respuesta json:", json); // 👀
+
+        if (!response.ok) throw new Error(json?.msg || "Error en loginAlumno");
+        return json;
     } catch (error) {
+        console.error("[loginAlumno][ERROR]", error); // 👀
         return { error: error.message };
     }
-}
+};
 
 export const createEvaluacion = async (id_docente, data) => {
     console.log("Llamando createEvaluacion", id_docente, data);
