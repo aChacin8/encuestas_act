@@ -41,10 +41,6 @@ export const loginAlumno = async (req, res) => {
             return res.status(404).json({ msg: "Alumno no encontrado" });
         }
 
-        if (alumno.fecha_nacimiento !== fecha_nacimiento) {
-            return res.status(401).json({ msg: "Credenciales incorrectas" });
-        }
-
         const validPassword = await bcrypt.compare(fecha_nacimiento, alumno.fecha_nacimiento);
         if (!validPassword) {
             return res.status(401).json({ message: 'Contraseña incorrecta' });
