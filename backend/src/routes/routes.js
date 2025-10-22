@@ -22,6 +22,6 @@ router.post ('/alumnos',
                     createAlumno
                 )
 router.post ('/alumnos/login', loginAlumno )
-router.get('/alumnos/:id_alumno', getAlumnoById)
+router.get('/alumnos/:codigo_estudiante', getAlumnoById)
 
 export default router
