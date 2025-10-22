@@ -50,20 +50,20 @@ const Login = () => {
                                 type="text"
                                 placeholder="Ejemplo: A001"
                                 {...register("codigo_estudiante", {
-                                    required: "El código es obligatorio",
-                                    pattern: {
-                                        value: /^A\d{3,5}$/,
-                                        message: "El código debe tener el formato A### (ej: A001)",
-                                    },
-                                    minLength: {
-                                        value: 4,
-                                        message: "El código debe tener al menos 4 caracteres",
-                                    },
-                                    maxLength: {
-                                        value: 6,
-                                        message: "El código no debe exceder 6 caracteres",
-                                    },
-                                })}
+            required: "El código es obligatorio",
+            pattern: {
+                value: /^[0-9]{6,10}$/,
+                message: "El código debe contener solo números (6 a 10 dígitos)",
+            },
+            minLength: {
+                value: 6,
+                message: "El código debe tener al menos 6 caracteres",
+            },
+            maxLength: {
+                value: 10,
+                message: "El código no debe exceder 10 caracteres",
+            },
+        })}
                             />
                             {errors.codigo_estudiante && (
                                 <p className="text-danger">{errors.codigo_estudiante.message}</p>
