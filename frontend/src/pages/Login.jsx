@@ -48,9 +48,9 @@ const Login = () => {
                             <Form.Label>Código de estudiante</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Ejemplo: A001"
+                                placeholder="Ejemplo: 0101010101"
                                 {...register("codigo_estudiante", {
-            required: "El código es obligatorio",
+            required: "El código de estudiante es obligatorio",
             pattern: {
                 value: /^[0-9]{6,10}$/,
                 message: "El código debe contener solo números (6 a 10 dígitos)",
