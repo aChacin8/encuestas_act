@@ -6,7 +6,7 @@ import Alumno from "../models/alumnos.js";
 
 export const createAlumno = async (req, res) => {
     try {
-        const { codigo_estudiante, nombre_estudiante, apellido_estudiante, fecha_nacimiento } = req.body;
+        const { codigo_estudiante, nombre_estudiante, apellido_estudiante, fecha_nacimiento, sede_uvm, carrera } = req.body;
 
         const alumnoExistente = await Alumno.findByPk(codigo_estudiante);
         if (alumnoExistente) {
@@ -15,12 +15,16 @@ export const createAlumno = async (req, res) => {
 
         const hashPassword = await bcrypt.hash(fecha_nacimiento, 10)
 
+
         const alumno = await Alumno.create({
             codigo_estudiante,
             nombre_estudiante,
+            sede: sede_uvm,
+            carrera,
             apellido_estudiante,
             fecha_nacimiento: hashPassword,
         });
+
 
         return res.status(201).json({
             msg: "Alumno registrado correctamente",
@@ -44,14 +48,14 @@ export const loginAlumno = async (req, res) => {
         const validPassword = await bcrypt.compare(fecha_nacimiento, alumno.fecha_nacimiento);
         if (!validPassword) {
             return res.status(401).json({ message: 'Contraseña incorrecta' });
-        } 
+        }
 
-        const token = jwt.sign (
+        const token = jwt.sign(
             {
                 codigo_estudiante: alumno.codigo_estudiante
             },
-            process.env.JWT_SECRET, 
-            {expiresIn: '8h'}
+            process.env.JWT_SECRET,
+            { expiresIn: '8h' }
         )
         return res.status(200).json({
             msg: "Login exitoso",
@@ -63,3 +67,17 @@ export const loginAlumno = async (req, res) => {
         return res.status(500).json({ msg: "Error en el login", error: error.message });
     }
 };
+
+export const getAlumnoById = async (req, res) => {
+    try {
+        const { codigo_estudiante } = req.params;
+        const alumno = await Alumno.findOne(codigo_estudiante);
+
+        if (!alumno) {
+            return res.status(404).json({ msg: "Alumno no encontrado" });
+        }
+        return res.status(200).json({ alumno });
+    } catch (error) {
+        return res.status(500).json({ msg: 'Error al obtener el alumno' })
+    }
+}
