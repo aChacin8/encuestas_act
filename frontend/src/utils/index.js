@@ -1,37 +1,36 @@
 export const createAlumno = async (data) => {
     try {
         const response = await fetch('http://localhost:3000/api/alumnos', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json' // Indica que el cuerpo de la solicitud es JSON
-                },
-                body: JSON.stringify(data) // Convierte el objeto "data" a formato JSON
-            });
-            if (!response.ok) throw new Error('Error al create el alumno');
-            return await response.json();
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        if (!response.ok) throw new Error('Error al create el alumno');
+        return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
 
 export const loginAlumno = async (data) => {
-    console.log("[loginAlumno] data enviado:", data); // 👀
+    console.log("[loginAlumno] data enviado:", data);
     try {
-        const response = await fetch ('http://localhost:3000/api/alumnos/login', {
+        const response = await fetch('http://localhost:3000/api/alumnos/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
         });
-        
-        console.log("[loginAlumno] status:", response.status); // 👀
+
+        console.log("[loginAlumno] status:", response.status);
         const json = await response.json();
-        console.log("[loginAlumno] respuesta json:", json); // 👀
+        console.log("[loginAlumno] respuesta json:", json);
 
         if (!response.ok) throw new Error(json?.msg || "Error en loginAlumno");
         return json;
     } catch (error) {
-        console.error("[loginAlumno][ERROR]", error); // 👀
-        return { error: error.message };
+        throw new Error(error.message);
     }
 };
 
@@ -45,7 +44,7 @@ export const createEvaluacion = async (id_docente, data) => {
         headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
-        },  
+        },
         body: JSON.stringify(data)
     });
     const json = await res.json();
@@ -63,7 +62,7 @@ export const getDocentes = async () => {
         if (!response.ok) throw new Error('Error al obtener los docentes');
         return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
 
@@ -76,7 +75,7 @@ export const getDocentesById = async (id_docente) => {
         if (!response.ok) throw new Error('Error al obtener el docente');
         return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
 
@@ -89,7 +88,7 @@ export const getCriterios = async () => {
         if (!response.ok) throw new Error('Error al obtener los criterios');
         return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
 
@@ -102,7 +101,7 @@ export const getCriteriosById = async (id_criterio) => {
         if (!response.ok) throw new Error('Error al obtener el criterio');
         return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
 
@@ -115,6 +114,24 @@ export const getEvaluacionesByDocente = async (id_docente) => {
         if (!response.ok) throw new Error('Error al obtener las evaluaciones del docente');
         return await response.json();
     } catch (error) {
-        return { error: error.message };
+        throw new Error(error.message);
     }
 }
+
+export const getAlumnoById = async (codigo_estudiante) => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/alumnos/${codigo_estudiante}`, {
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        const data = await response.json();
+        return data.alumno;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+};
