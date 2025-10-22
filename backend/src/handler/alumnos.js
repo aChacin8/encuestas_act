@@ -71,13 +71,15 @@ export const loginAlumno = async (req, res) => {
 export const getAlumnoById = async (req, res) => {
     try {
         const { codigo_estudiante } = req.params;
-        const alumno = await Alumno.findOne(codigo_estudiante);
+        const alumno = await Alumno.findOne({where: {codigo_estudiante}});
 
-        if (!alumno) {
+        if (!alumno) {  
             return res.status(404).json({ msg: "Alumno no encontrado" });
         }
         return res.status(200).json({ alumno });
     } catch (error) {
+        console.log(error);
+        
         return res.status(500).json({ msg: 'Error al obtener el alumno' })
     }
 }
