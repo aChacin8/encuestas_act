@@ -16,6 +16,14 @@ const Alumno = db.define("Alumno", {
         type: DataTypes.STRING(100), 
         allowNull: false 
     },
+    sede: {
+        type: DataTypes.ENUM('UVM Reforma', 'UVM Coyoacan', 'UVM Mixcoac', 'UVM Lindavista', 'UVM Cuernavaca', 'UVM Pachuca', 'UVM Toluca'),
+        allowNull: false
+    },
+    carrera: {
+        type: DataTypes.STRING(100),
+        allowNull: false
+    },
     fecha_nacimiento: { 
         type: DataTypes.STRING(200),
         allowNull: false 
