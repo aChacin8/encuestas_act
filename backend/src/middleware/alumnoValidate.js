@@ -41,7 +41,7 @@ export const validateAlumno = async (req, res, next ) => {
         .notEmpty().withMessage('La carrera es obligatoria')
         .isLength({ min: 10, max: 100 }).withMessage('La carrera debe tener entre 2 y 100 caracteres')
         .run(req);
-    await body('fecha_nacimiento')
+    await body('contraseña')
         .notEmpty().withMessage('La fecha de nacimiento es obligatoria')
         .isLength({min:8, max: 8}).withMessage('La fecha de nacimiento debe tener minimo y máximo 8 caracteres')
         .matches(/[0-9]/).withMessage('La fecha de nacimienito debe tener numeros')

@@ -24,7 +24,7 @@ const Alumno = db.define("Alumno", {
         type: DataTypes.STRING(100),
         allowNull: false
     },
-    fecha_nacimiento: { 
+    contraseña: { 
         type: DataTypes.STRING(200),
         allowNull: false 
     }
