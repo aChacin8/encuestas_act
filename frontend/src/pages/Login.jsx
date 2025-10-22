@@ -75,7 +75,7 @@ const Login = () => {
                             <Form.Control
                                 type="password"
                                 placeholder="********"
-                                {...register("fecha_nacimiento", {
+                                {...register("contraseña", {
                                     required: "La contraseña es obligatoria",
                                     minLength: {
                                         value: 6,
@@ -83,7 +83,7 @@ const Login = () => {
                                     },
                                 })}
                             />
-                            <p className="text-danger">{errors.fecha_nacimiento?.message}</p>
+                            <p className="text-danger">{errors.contraseña?.message}</p>
                             <p style={{ fontSize: "0.9rem", color: "gray" }}>
                                 Tu fecha de nacimiento es tu contraseña para ingresar al sistema.
                                 <br />

@@ -131,7 +131,7 @@ const SignUp = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="AAAA-MM-DD"
-                                {...register("fecha_nacimiento", {
+                                {...register("contraseña", {
                                     required: "La fecha de nacimiento es obligatoria",
                                     pattern: {
                                         value: /^\d{4}-\d{2}-\d{2}$/,
@@ -139,7 +139,7 @@ const SignUp = () => {
                                     },
                                 })}
                             />
-                            <p className="text-danger">{errors.fecha_nacimiento?.message}</p>
+                            <p className="text-danger">{errors.contraseña?.message}</p>
                             <p style={{ fontSize: "0.9rem", color: "gray" }}>
                                 Tu fecha de nacimiento será tu contraseña para ingresar al
                                 sistema (formato AAAA-MM-DD).
