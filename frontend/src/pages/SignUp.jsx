@@ -45,30 +45,61 @@ const SignUp = () => {
                     </Card.Title>
 
                     <Form onSubmit={handleSubmit(onSubmit)}>
+<Form.Group className="mb-3">
+    <Form.Label>Código de estudiante:</Form.Label>
+    <Form.Control
+        type="text"
+        placeholder=""
+        {...register("codigo_estudiante", {
+            required: "El código es obligatorio",
+            pattern: {
+                value: /^[0-9]{6,10}$/,
+                message: "El código debe contener solo números (6 a 10 dígitos)",
+            },
+            minLength: {
+                value: 6,
+                message: "El código debe tener al menos 6 caracteres",
+            },
+            maxLength: {
+                value: 10,
+                message: "El código no debe exceder 10 caracteres",
+            },
+        })}
+    />
+    {errors.codigo_estudiante && (
+        <p className="text-danger">{errors.codigo_estudiante.message}</p>
+    )}
+</Form.Group>
+
                         <Form.Group className="mb-3">
-                            <Form.Label>Código de estudiante:</Form.Label>
+                            <Form.Label>Sede UVM</Form.Label>
+                            <Form.Select
+                                {...register("sede_uvm", {
+                                    required: "La sede es obligatoria",
+                                })}
+                            >
+                                <option value="">Selecciona una sede</option>
+                                <option value="UVM Reforma">UVM Reforma</option>
+                                <option value="UVM Coyoacan">UVM Coyoacan</option>
+                                <option value="UVM Mixcoac">UVM Mixcoac</option>
+                                <option value="UVM Lindavista">UVM Lindavista</option>
+                                <option value="UVM Cuernavaca">UVM Cuernavaca</option>
+                                <option value="UVM Pachuca">UVM Pachuca</option>
+                                <option value="UVM Toluca">UVM Toluca</option>
+                            </Form.Select>
+                            <p className="text-danger">{errors.sede_uvm?.message}</p>
+                        </Form.Group>
+
+                        <Form.Group className="mb-3">
+                            <Form.Label>Carrera:</Form.Label>
                             <Form.Control
                                 type="text"
-                                placeholder="Ejemplo: A001"
-                                {...register("codigo_estudiante", {
-                                    required: "El código es obligatorio",
-                                    pattern: {
-                                        value: /^A\d{3,5}$/,
-                                        message: "El código debe tener el formato A### (ej: A001)",
-                                    },
-                                    minLength: {
-                                        value: 4,
-                                        message: "El código debe tener al menos 4 caracteres",
-                                    },
-                                    maxLength: {
-                                        value: 6,
-                                        message: "El código no debe exceder 6 caracteres",
-                                    },
+                                placeholder="Ingresa tu carrera"
+                                {...register("carrera", {
+                                    required: "La carrera es obligatoria",
                                 })}
                             />
-                            {errors.codigo_estudiante && (
-                                <p className="text-danger">{errors.codigo_estudiante.message}</p>
-                            )}
+                            <p className="text-danger">{errors.carrera?.message}</p>
                         </Form.Group>
 
                         <Form.Group className="mb-3">
@@ -114,6 +145,7 @@ const SignUp = () => {
                                 sistema (formato AAAA-MM-DD).
                             </p>
                         </Form.Group>
+
 
                         <div className="d-grid gap-2">
                             <Button variant="success" type="submit">
