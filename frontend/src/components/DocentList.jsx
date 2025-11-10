@@ -1,4 +1,4 @@
-import { jwtDecode } from 'jwt-decode'; // ✅ Importación correcta
+import { jwtDecode } from 'jwt-decode';
 import { useQuery } from '@tanstack/react-query';
 import { getDocentes, getAlumnoById } from '../utils';
 import { Link } from 'react-router';
@@ -12,7 +12,7 @@ const DocenteList = () => {
 
     if (token) {
         try {
-            const payload = jwtDecode(token); // ✅ Aquí también
+            const payload = jwtDecode(token);
             codigo_estudiante = payload?.codigo_estudiante;
         } catch (e) {
             console.error("Error al decodificar el token:", e);
@@ -46,6 +46,10 @@ const DocenteList = () => {
             </div>
         );
 
+    const docentesFiltrados = docentes.filter(
+        (docente) => docente.sede === alumno?.sede
+    );
+
     return (
         <div className="d-flex flex-column align-items-center vh-100 px-3 py-4">
             <LogoutButton />
@@ -56,23 +60,27 @@ const DocenteList = () => {
             >
                 <Card.Body className="p-4">
                     <Card.Title className="text-center text-primary mb-4">
-                        Lista de Docentes
+                        Lista de Docentes en {alumno?.sede}
                     </Card.Title>
-                    <ul className="list-group">
-                        {docentes.map((docente) => (
-                            <li
-                                key={docente.id_docente}
-                                className="list-group-item list-group-item-action"
-                            >
-                                <Link
-                                    to={`/docentes/${docente.id_docente}`}
-                                    className="text-decoration-none text-dark"
+                    {docentesFiltrados.length > 0 ? (
+                        <ul className="list-group">
+                            {docentesFiltrados.map((docente) => (
+                                <li
+                                    key={docente.id_docente}
+                                    className="list-group-item list-group-item-action"
                                 >
-                                    {docente.nombre_docente} {docente.apellido_docente}
-                                </Link>
-                            </li>
-                        ))}
-                    </ul>
+                                    <Link
+                                        to={`/docentes/${docente.id_docente}`}
+                                        className="text-decoration-none text-dark"
+                                    >
+                                        {docente.nombre_docente} {docente.apellido_docente}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <p className="text-center text-muted">No hay docentes en tu sede.</p>
+                    )}
                 </Card.Body>
             </Card>
         </div>
