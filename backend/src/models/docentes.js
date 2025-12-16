@@ -20,6 +20,10 @@ const Docente = db.define("Docente", {
         allowNull: false,
         unique: true
     },
+    password: {
+        type: DataTypes.STRING(255),
+        allowNull: false
+    },
     materia: {
         type: DataTypes.STRING(100),
         allowNull: false
