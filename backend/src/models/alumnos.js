@@ -17,14 +17,14 @@ const Alumno = db.define("Alumno", {
         allowNull: false 
     },
     sede: {
-        type: DataTypes.ENUM('UVM Reforma', 'UVM Coyoacan', 'UVM Mixcoac', 'UVM Lindavista', 'UVM Cuernavaca', 'UVM Pachuca', 'UVM Toluca'),
+        type: DataTypes.ENUM('UVM_Reforma', 'UVM_Coyoacan', 'UVM_Mixcoac', 'UVM_Lindavista', 'UVM_Cuernavaca', 'UVM_Pachuca', 'UVM_Toluca'),
         allowNull: false
     },
     carrera: {
         type: DataTypes.STRING(100),
         allowNull: false
     },
-    contraseña: { 
+    password: { 
         type: DataTypes.STRING(200),
         allowNull: false 
     }
