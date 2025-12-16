@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { body } from "express-validator";
+import Alumno from "../models/alumnos";
 
 export const alumnoValidate = (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -48,3 +49,18 @@ export const validateAlumno = async (req, res, next ) => {
         .matches(/^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/).withMessage('La fecha de nacimiento debe tener el formato AAAAMMDD')
         .run(req);
     }
+
+export const getAlumnoById = async (req, res) =>{
+    try {
+        const { codigo_estudiante } = req.body;
+        const alumno = await Alumno.findByPk(codigo_estudiante)
+
+        if (!alumno){
+            return res.status(404).json({message: "Error al obtener por codigo de estudiante"})
+        }
+        req.alumno = alumno;
+        res.status(200).json({message: `Alumno ${codigo_estudiante}`})
+    } catch (error) {
+        return res.json({message: "Internal Server Error"})
+    }
+}
