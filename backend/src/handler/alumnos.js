@@ -6,23 +6,23 @@ import Alumno from "../models/alumnos.js";
 
 export const createAlumno = async (req, res) => {
     try {
-        const { codigo_estudiante, nombre_estudiante, apellido_estudiante, contraseña, sede_uvm, carrera } = req.body;
+        const { codigo_estudiante, nombre_estudiante, apellido_estudiante, password, sede, carrera } = req.body;
 
         const alumnoExistente = await Alumno.findByPk(codigo_estudiante);
         if (alumnoExistente) {
             return res.status(400).json({ msg: "El alumno ya existe" });
         }
 
-        const hashPassword = await bcrypt.hash(contraseña, 10)
+        const hashPassword = await bcrypt.hash(password, 10)
 
 
         const alumno = await Alumno.create({
             codigo_estudiante,
             nombre_estudiante,
-            sede: sede_uvm,
+            sede: sede,
             carrera,
             apellido_estudiante,
-            contraseña: hashPassword,
+            password: hashPassword,
         });
 
 
@@ -38,16 +38,16 @@ export const createAlumno = async (req, res) => {
 
 export const loginAlumno = async (req, res) => {
     try {
-        const { codigo_estudiante, contraseña } = req.body;
+        const { codigo_estudiante, password } = req.body;
 
         const alumno = await Alumno.findByPk(codigo_estudiante);
         if (!alumno) {
             return res.status(404).json({ msg: "Alumno no encontrado" });
         }
 
-        const validPassword = await bcrypt.compare(contraseña, alumno.contraseña);
+        const validPassword = await bcrypt.compare(password, alumno.password);
         if (!validPassword) {
-            return res.status(401).json({ message: 'Contraseña incorrecta' });
+            return res.status(401).json({ message: 'password incorrecta' });
         }
 
         const token = jwt.sign(
@@ -81,5 +81,33 @@ export const getAlumnoById = async (req, res) => {
         console.log(error);
         
         return res.status(500).json({ msg: 'Error al obtener el alumno' })
+    }
+}
+
+export const getAlumnosByDocente = async (req, res) => {
+    try {
+        const { id_docente } = req.params;
+        
+        const alumnos = await Alumno.findAll({
+            where: { id_docente }
+        });
+
+        return res.status(200).json({ alumnos });
+    } catch (error) {
+        return res.status(500).json({ msg: 'Error al obtener los alumnos por docente' })
+    }
+}
+
+export const getAlumnosBySede = async (req, res) => {
+    try {
+        const { sede } = req.params;
+        
+        const alumnos = await Alumno.findAll({
+            where: { sede }
+        });
+
+        return res.status(200).json({ alumnos });
+    } catch (error) {   
+        return res.status(500).json({ msg: 'Error al obtener los alumnos por sede' })
     }
 }
