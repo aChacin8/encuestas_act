@@ -67,7 +67,7 @@ const AlumnoDetail = () => {
                         </h5>
                         <p><strong>Sede:</strong> {alumno.sede}</p>
                         <p><strong>Carrera:</strong> {alumno.carrera}</p>
-                        <p><strong>Contraseña:</strong> {alumno.contraseña}</p>
+                        <p><strong>password:</strong> {alumno.password}</p>
                     </div>
                     <div className="d-flex justify-content-between">
                         <button className="btn btn-primary">Editar</button>

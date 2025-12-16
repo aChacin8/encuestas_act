@@ -71,21 +71,21 @@ const Login = () => {
                         </Form.Group>
 
                         <Form.Group className="mb-3">
-                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Label>password</Form.Label>
                             <Form.Control
                                 type="password"
                                 placeholder="********"
-                                {...register("contraseña", {
-                                    required: "La contraseña es obligatoria",
+                                {...register("password", {
+                                    required: "La password es obligatoria",
                                     minLength: {
                                         value: 6,
-                                        message: "La contraseña debe tener al menos 6 caracteres",
+                                        message: "La password debe tener al menos 6 caracteres",
                                     },
                                 })}
                             />
-                            <p className="text-danger">{errors.contraseña?.message}</p>
+                            <p className="text-danger">{errors.password?.message}</p>
                             <p style={{ fontSize: "0.9rem", color: "gray" }}>
-                                Tu fecha de nacimiento es tu contraseña para ingresar al sistema.
+                                Tu fecha de nacimiento es tu password para ingresar al sistema.
                                 <br />
                                 IMPORTANTE RESPETAR EL FORMATO (AAAA-MM-DD)
                             </p>

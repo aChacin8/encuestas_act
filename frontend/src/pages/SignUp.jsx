@@ -23,7 +23,7 @@ const SignUp = () => {
             }
 
             alert(
-                "Alumno registrado con éxito. Recuerda que tu contraseña será tu fecha de nacimiento."
+                "Alumno registrado con éxito. Recuerda que tu password será tu fecha de nacimiento."
             );
             reset();
             navigate("/alumnos/login");
@@ -131,7 +131,7 @@ const SignUp = () => {
                             <Form.Control
                                 type="text"
                                 placeholder="AAAA-MM-DD"
-                                {...register("contraseña", {
+                                {...register("password", {
                                     required: "La fecha de nacimiento es obligatoria",
                                     pattern: {
                                         value: /^\d{4}-\d{2}-\d{2}$/,
@@ -139,9 +139,9 @@ const SignUp = () => {
                                     },
                                 })}
                             />
-                            <p className="text-danger">{errors.contraseña?.message}</p>
+                            <p className="text-danger">{errors.password?.message}</p>
                             <p style={{ fontSize: "0.9rem", color: "gray" }}>
-                                Tu fecha de nacimiento será tu contraseña para ingresar al
+                                Tu fecha de nacimiento será tu password para ingresar al
                                 sistema (formato AAAA-MM-DD).
                             </p>
                         </Form.Group>
