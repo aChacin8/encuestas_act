@@ -1,8 +1,8 @@
 import express from 'express';
-import { getDocenteById, getDocentes } from '../handler/docentes.js';
+import { getDocenteById, getDocentes, loginDocente } from '../handler/docentes.js';
 import { getCriterios, getCriteriosById } from '../handler/criterios.js';
 import { createEvaluacion, getEvaluacionesByDocente } from '../handler/evaluacion.js';
-import { createAlumno, getAlumnoById, loginAlumno } from '../handler/alumnos.js';
+import { createAlumno, getAlumnoById, getAlumnosByDocente, getAlumnosBySede, loginAlumno } from '../handler/alumnos.js';
 import {alumnoValidate, validateAlumno} from '../middleware/alumnoValidate.js'
 import { handleInputErrors } from '../middleware/handleInputErrors.js';
 
@@ -23,5 +23,13 @@ router.post ('/alumnos',
                 )
 router.post ('/alumnos/login', loginAlumno )
 router.get('/alumnos/:codigo_estudiante', getAlumnoById)
+router.get('/alumnos/:sede', getAlumnosBySede)
+
+
+//Docentes
+
+router.post('/docentes/login', loginDocente)
+
+router.get('/docentes/:id_docente/alumnos', getAlumnosByDocente)
 
 export default router
