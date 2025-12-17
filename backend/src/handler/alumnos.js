@@ -1,101 +1,61 @@
-import bcrypt from "bcrypt"
-import jwt from 'jsonwebtoken';
-import 'dotenv/config'
-
-import Alumno from "../models/alumnos.js";
+import Alumno from "../models/Alumno.js";
+import AlumnoDocente from "../models/AlumnoDocente.js";
+import { hashPassword, comparePassword } from "../services/bcrypt.js";
+import { generateToken } from "../services/jwt.js";
 
 export const createAlumno = async (req, res) => {
-    try {
-        const { codigo_estudiante, nombre_estudiante, apellido_estudiante, password, sede, carrera } = req.body;
+    const { codigo_estudiante, password, ...data } = req.body;
 
-        const alumnoExistente = await Alumno.findByPk(codigo_estudiante);
-        if (alumnoExistente) {
-            return res.status(400).json({ msg: "El alumno ya existe" });
-        }
+    const exists = await Alumno.findByPk(codigo_estudiante);
+    if (exists) return res.status(400).json({ msg: "Alumno ya existe" });
 
-        const hashPassword = await bcrypt.hash(password, 10)
+    const alumno = await Alumno.create({
+        codigo_estudiante,
+        ...data,
+        password: await hashPassword(password)
+    });
 
-
-        const alumno = await Alumno.create({
-            codigo_estudiante,
-            nombre_estudiante,
-            sede: sede,
-            carrera,
-            apellido_estudiante,
-            password: hashPassword,
-        });
-
-
-        return res.status(201).json({
-            msg: "Alumno registrado correctamente",
-            alumno
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: "Error al registrar el alumno", error: error.message });
-    }
+    res.status(201).json({ msg: "Alumno creado correctamente", alumno });
 };
 
 export const loginAlumno = async (req, res) => {
-    try {
-        const { codigo_estudiante, password } = req.body;
+    const { codigo_estudiante, password } = req.body;
 
-        const alumno = await Alumno.findByPk(codigo_estudiante);
-        if (!alumno) {
-            return res.status(404).json({ msg: "Alumno no encontrado" });
-        }
+    const alumno = await Alumno.findByPk(codigo_estudiante);
+    if (!alumno) return res.status(404).json({ msg: "Alumno no encontrado" });
 
-        const validPassword = await bcrypt.compare(password, alumno.password);
-        if (!validPassword) {
-            return res.status(401).json({ message: 'password incorrecta' });
-        }
+    const valid = await comparePassword(password, alumno.password);
+    if (!valid) return res.status(401).json({ msg: "Credenciales inválidas" });
 
-        const token = jwt.sign(
-            {
-                codigo_estudiante: alumno.codigo_estudiante
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '8h' }
-        )
-        return res.status(200).json({
-            msg: "Login exitoso",
-            alumno,
-            token
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: "Error en el login", error: error.message });
-    }
+    const token = generateToken({ codigo_estudiante });
+    res.json({ token });
 };
 
-export const getAlumnoById = async (req, res) => {
-    req.json(req.alumno)
-}
+export const getAlumnoProfile = async (req, res) => {
+    const alumno = await Alumno.findByPk(req.user.codigo_estudiante, {
+        attributes: { exclude: ["password"] }
+    });
+
+    res.json({ alumno });
+};
 
 export const getAlumnosByDocente = async (req, res) => {
-    try {
-        const { id_docente } = req.params;
-        
-        const alumnos = await Alumno.findAll({
-            where: { id_docente }
-        });
+    const { id_docente } = req.params;
 
-        return res.status(200).json({ alumnos });
-    } catch (error) {
-        return res.status(500).json({ msg: 'Error al obtener los alumnos por docente' })
-    }
-}
+    const alumnos = await Alumno.findAll({
+        include: [{
+            model: AlumnoDocente,
+            where: { id_docente },
+            attributes: []
+        }]
+    });
+
+    res.json({ alumnos });
+};
 
 export const getAlumnosBySede = async (req, res) => {
-    try {
-        const { sede } = req.params;
-        
-        const alumnos = await Alumno.findAll({
-            where: { sede }
-        });
+    const { sede } = req.params;
 
-        return res.status(200).json({ alumnos });
-    } catch (error) {   
-        return res.status(500).json({ msg: 'Error al obtener los alumnos por sede' })
-    }
-}
+    const alumnos = await Alumno.findAll({ where: { sede } });
+    res.json({ alumnos });
+};

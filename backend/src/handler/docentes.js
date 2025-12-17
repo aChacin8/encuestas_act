@@ -1,77 +1,63 @@
-import Alumno from '../models/alumnos.js';
-import Docente from '../models/docentes.js';
+import Docente from "../models/Docente.js";
+import { comparePassword } from "../services/bcrypt.js";
+import { generateToken } from "../services/jwt.js";
 
-import jwt from 'jsonwebtoken';
 export const getDocentes = async (req, res) => {
-    try {
-        const docentes = await Docente.findAll({where: {activo: true}});
-        res.json(docentes);
-    } catch (error) {
-        const err = new Error ('Error al obtener los docentes');
-        return res.status(500).json({msg: err.message});
-    }    
-}
+    const docentes = await Docente.findAll({
+        where: { activo: true },
+        attributes: { exclude: ["password"] }
+    });
+    res.json(docentes);
+};
 
 export const getDocenteById = async (req, res) => {
-    const { id_docente } = req.params;  
-    try {
-        const docente = await Docente.findOne({where: {id_docente, activo: true}})
-        if (!docente){
-            const err = new Error ('Docente no encontrado');
-            return res.status(404).json({msg: err.message})
-        }
-        res.status(200).json({msg: 'Docente encontrado', docente})
-    }
-    catch (error){
-        const err = new Error ('Error al obtener el docente por ID');
-        return res.status(500).json({msg: err.message});
-    }
-}
+    const { id_docente } = req.params;
+
+    const docente = await Docente.findOne({
+        where: { id_docente, activo: true },
+        attributes: { exclude: ["password"] }
+    });
+
+    if (!docente) return res.status(404).json({ msg: "Docente no encontrado" });
+
+    res.json({ docente });
+};
 
 export const loginDocente = async (req, res) => {
-    try {
-        const { email, password } = req.body;
+    const { email, password } = req.body;
 
-        const docente = await Docente.findOne({where: { email, activo: true }});
-        if (!docente) {
-            return res.status(404).json({ msg: "Docente no encontrado" });
-        }
+    const docente = await Docente.findOne({ where: { email, activo: true } });
+    if (!docente) return res.status(404).json({ msg: "Docente no encontrado" });
 
-        // const validPassword = await bcrypt.compare(password, docente.password);
-        const validPassword = password === docente.password;
-        if (!validPassword) {
-            return res.status(401).json({ message: 'password incorrecta' });
-        }
+    const valid = await comparePassword(password, docente.password);
+    if (!valid) return res.status(401).json({ msg: "Credenciales inválidas" });
 
-        const token = jwt.sign(
-            {
-                id_docente: docente.id_docente
-            },
-            process.env.JWT_SECRET,
-            { expiresIn: '8h' }
-        )
-        return res.status(200).json({
-            msg: "Docente inicio de sesion exitoso",
-            token
-        });
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ msg: "Error en el login", error: error.message });
-    }
-}
+    const token = generateToken({ id_docente: docente.id_docente });
+    res.json({ token });
+};
 
 export const getDocenteProfile = async (req, res) => {
+    const docente = await Docente.findByPk(req.user.id_docente, {
+        attributes: { exclude: ["password"] }
+    });
+
+    res.json({ docente });
+};
+
+export const getDocentesBySede = async (req, res) => {
+    const { sede } = req.params;
+
     try {
-        const docente = await Docente.findByPk(req.id_docente, {
-            attributes: { exclude: ['password'] }
+        const docentes = await Docente.findAll({
+            where: {
+                sede,
+                activo: true
+            },
+            attributes: { exclude: ["password"] }
         });
-        if (!docente) {
-            return res.status(404).json({ msg: "Docente no encontrado" });
-        }
-        return res.status(200).json({ docente });
+
+        res.status(200).json({ docentes });
     } catch (error) {
-        return res.status(500).json({ msg: "Error al obtener el perfil del docente", error: error.message });
+        res.status(500).json({ msg: "Error al obtener docentes por sede" });
     }
-}
-
-
+};

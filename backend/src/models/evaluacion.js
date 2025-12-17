@@ -1,10 +1,9 @@
 import { DataTypes } from "sequelize";
-
 import { db } from "../config/db.js";
-import Docente from "./docentes.js";
-import Periodo from "./periodo.js";
-import Encuesta from "./encuestas.js";
-import Alumno from "./alumnos.js";
+import Docente from "./Docentes.js";
+import Periodo from "./Periodo.js";
+import Encuesta from "./Encuestas.js";
+import Alumno from "./Alumnos.js";
 
 const Evaluacion = db.define("Evaluacion", {
     id_evaluacion: { 
@@ -26,12 +25,13 @@ const Evaluacion = db.define("Evaluacion", {
     completada: { 
         type: DataTypes.BOOLEAN, 
         defaultValue: false 
-    },
+    }
 }, {
     tableName: "evaluaciones",
-    timestamps: false,
+    timestamps: false
 });
 
+/* Relaciones */
 Evaluacion.belongsTo(Docente, { foreignKey: "id_docente" });
 Docente.hasMany(Evaluacion, { foreignKey: "id_docente" });
 
@@ -42,6 +42,6 @@ Evaluacion.belongsTo(Encuesta, { foreignKey: "id_encuesta" });
 Encuesta.hasMany(Evaluacion, { foreignKey: "id_encuesta" });
 
 Evaluacion.belongsTo(Alumno, { foreignKey: "codigo_estudiante" });
-Docente.hasMany(Evaluacion, { foreignKey: "codigo_estudiante" });
+Alumno.hasMany(Evaluacion, { foreignKey: "codigo_estudiante" });
 
-export default Evaluacion
+export default Evaluacion;

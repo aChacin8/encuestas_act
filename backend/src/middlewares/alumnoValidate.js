@@ -1,22 +1,4 @@
-import jwt from "jsonwebtoken";
 import { body } from "express-validator";
-import Alumno from "../models/alumnos";
-
-export const alumnoValidate = (req, res, next) => {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-        return res.status(401).json({ msg: "No se proporcionó token" });
-    }
-
-    const token = authHeader.split(" ")[1];
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.codigo_estudiante = decoded.codigo_estudiante;
-        next();
-    } catch (error) {
-        return res.status(401).json({ msg: "Token inválido" });
-    }
-};
 
 export const validateAlumno = async (req, res, next ) => {
     await body('codigo_estudiante')
@@ -50,17 +32,3 @@ export const validateAlumno = async (req, res, next ) => {
         .run(req);
     }
 
-export const getAlumnoById = async (req, res) =>{
-    try {
-        const { codigo_estudiante } = req.body;
-        const alumno = await Alumno.findByPk(codigo_estudiante)
-
-        if (!alumno){
-            return res.status(404).json({message: "Error al obtener por codigo de estudiante"})
-        }
-        req.alumno = alumno;
-        res.status(200).json({message: `Alumno ${codigo_estudiante}`})
-    } catch (error) {
-        return res.json({message: "Internal Server Error"})
-    }
-}
