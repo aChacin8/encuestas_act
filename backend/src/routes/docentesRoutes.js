@@ -13,6 +13,7 @@ import { createEvaluacion, getEvaluacionesByDocente } from "../handler/evaluacio
 
 import { authDocente } from "../middlewares/authValidation.js";
 import { handleInputErrors } from "../middlewares/handleInputErrors.js";
+import { getAlumnosByDocente } from "../handler/alumnos.js";
 
 const docentesRoutes = express.Router();
 
@@ -40,7 +41,7 @@ docentesRoutes.get(
 
 docentesRoutes.post(
     "/docentes/:id_docente/evaluaciones",
-    authAlumno,
+    authDocente,
     handleInputErrors,
     createEvaluacion
 );
