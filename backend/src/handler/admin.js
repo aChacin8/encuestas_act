@@ -1,6 +1,20 @@
 import Alumno from "../models/Alumnos.js";
 import Docente from "../models/Docentes.js";
-import Evaluacion from "../models/evaluacion.js";
+import Evaluacion from "../models/Evaluacion.js";
+import Admin from "../models/Admin.js";
+
+export const loginAdmin = async (req, res) => {
+    const { email, password, id_admin} = req.body;
+
+    const admin = await Admin.findOne({where: {email}});
+    if (!admin) return res.status(404).json({ msg: "Admin no encontrado" });
+
+    const valid = await comparePassword(password, admin.password);
+    if (!valid) return res.status(401).json({ msg: "Credenciales inválidas" });
+
+    const token = generateToken({ id_admin, email });
+    res.json({ token });
+};
 
 export const getAlumnosAdmin = async (req, res) => {
     try {
