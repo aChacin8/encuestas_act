@@ -25,10 +25,11 @@ export const getAlumnosAdmin = async (req, res) => {
         const alumnos = await Alumno.findAll({
             attributes: [
                 "codigo_estudiante",
+                "email",
                 "nombre_estudiante",
                 "apellido_estudiante",
                 "sede",
-                "carrera"
+                "carrera",
             ]
         });
 
