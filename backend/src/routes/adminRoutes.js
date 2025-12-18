@@ -3,7 +3,8 @@ import {
     getAlumnosAdmin,
     getDocentesAdmin,
     getEstadoEvaluacionAlumno,
-    loginAdmin
+    loginAdmin,
+    notificarAlumnosPendientes
 } from "../handler/admin.js"
 import { authAdmin } from "../middlewares/authValidation.js";
 
@@ -13,5 +14,6 @@ adminRoutes.post("/admin", loginAdmin);
 adminRoutes.get("/admin/alumnos", authAdmin, getAlumnosAdmin);
 adminRoutes.get("/admin/docentes", authAdmin, getDocentesAdmin);
 adminRoutes.get("/admin/alumnos/:codigo_estudiante/evaluacion", authAdmin, getEstadoEvaluacionAlumno);
+adminRoutes.post("/admin/notificar-alumnos-pendientes", authAdmin, notificarAlumnosPendientes)
 
 export default adminRoutes;
