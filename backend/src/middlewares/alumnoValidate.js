@@ -26,9 +26,9 @@ export const validateAlumno = async (req, res, next ) => {
         .run(req);
     await body('password')
         .notEmpty().withMessage('La fecha de nacimiento es obligatoria')
-        .isLength({min:8, max: 8}).withMessage('La fecha de nacimiento debe tener minimo y máximo 8 caracteres')
+        .isLength({min:8 }).withMessage('La fecha de nacimiento debe tener minimo y máximo 8 caracteres')
         .matches(/[0-9]/).withMessage('La fecha de nacimienito debe tener numeros')
-        .matches(/^(19|20)\d{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])$/).withMessage('La fecha de nacimiento debe tener el formato AAAAMMDD')
         .run(req);
+    next()
     }
 
