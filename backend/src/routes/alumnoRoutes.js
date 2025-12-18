@@ -10,8 +10,9 @@ import {
 
 import { authAlumno } from "../middlewares/authValidation.js";
 import { validateAlumno } from "../middlewares/alumnoValidate.js";
+import { handleInputErrors } from '../middlewares/handleInputErrors.js';
 
-const alumnosRoutes = express.alumnosRoutes();
+const alumnosRoutes = express.Router();
 
 alumnosRoutes.post(
     "/alumnos",
@@ -26,7 +27,7 @@ alumnosRoutes.get("/alumnos/profile", authAlumno, getAlumnoProfile);
 
 alumnosRoutes.get(
     "/alumnos/sede/:sede",
-    authDocente,
+    authAlumno,
     getAlumnosBySede
 );
 
