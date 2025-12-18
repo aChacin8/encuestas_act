@@ -6,6 +6,15 @@ const seedEvaluaciones = async () => {
     await db.sync({ force: false });
 
     const evaluaciones = [
+        {
+          codigo_estudiante: "A000",
+          id_docente: 3,
+          id_periodo: 1,
+          id_encuesta: 1,
+          fecha_evaluacion: new Date(),
+          puntaje_total: 100.00,
+          completada: true
+        },
       // Evaluaciones COMPLETADAS
       {
         codigo_estudiante: "A001",
@@ -45,23 +54,14 @@ const seedEvaluaciones = async () => {
         puntaje_total: null,
         completada: false
       },
-      {
-        codigo_estudiante: "A005",
-        id_docente: 3,
-        id_periodo: 1,
-        id_encuesta: 1,
-        fecha_evaluacion: new Date(),
-        puntaje_total: null,
-        completada: false
-      },
 
       // Evaluación NO INICIADA
-      // A006, A007, A008 NO TIENEN REGISTRO
+      // A006, A007NO TIENEN REGISTRO
       // El admin verá que NO han evaluado
 
       // Más evaluaciones completadas
       {
-        codigo_estudiante: "A009",
+        codigo_estudiante: "A008",
         id_docente: 4,
         id_periodo: 1,
         id_encuesta: 1,
@@ -70,7 +70,7 @@ const seedEvaluaciones = async () => {
         completada: true
       },
       {
-        codigo_estudiante: "A010",
+        codigo_estudiante: "A009",
         id_docente: 5,
         id_periodo: 1,
         id_encuesta: 1,
