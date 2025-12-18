@@ -1,4 +1,4 @@
-import Docente from "../models/Docente.js";
+import Docente from "../models/Docentes.js";
 import { comparePassword } from "../services/bcrypt.js";
 import { generateToken } from "../services/jwt.js";
 

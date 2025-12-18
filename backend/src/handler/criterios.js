@@ -1,4 +1,4 @@
-import Criterio from "../models/criterios.js"
+import Criterio from "../models/Criterios.js"
 
 export const getCriterios = async (req, res) => {
     try {

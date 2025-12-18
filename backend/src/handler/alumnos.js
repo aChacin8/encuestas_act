@@ -1,4 +1,4 @@
-import Alumno from "../models/Alumno.js";
+import Alumno from "../models/Alumnos.js";
 import AlumnoDocente from "../models/AlumnoDocente.js";
 import { hashPassword, comparePassword } from "../services/bcrypt.js";
 import { generateToken } from "../services/jwt.js";

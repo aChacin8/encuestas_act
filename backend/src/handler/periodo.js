@@ -1,4 +1,4 @@
-import Periodo from "../models/periodo.js";
+import Periodo from "../models/Periodo.js";
 
 export const getPeriodosActivos = async (req, res) => {
     try {

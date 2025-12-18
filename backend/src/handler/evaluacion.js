@@ -1,6 +1,6 @@
-import Evaluacion from "../models/evaluacion.js";
-import DetalleEvaluacion from "../models/detalle_evaluacion.js";
-import Criterio from "../models/criterios.js";
+import Evaluacion from "../models/Evaluacion.js";
+import DetalleEvaluacion from "../models/DetalleEvaluacion.js";
+import Criterio from "../models/Criterios.js";
 // import Comentario from "../models/comentarios.js"; 
 
 export const createEvaluacion = async (req, res) => {
