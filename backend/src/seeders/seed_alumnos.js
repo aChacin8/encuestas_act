@@ -1,5 +1,5 @@
 import { db } from "../config/db.js";
-import Alumno from "../models/Alumno.js";
+import Alumno from "../models/Alumnos.js";
 import { hashPassword } from "../services/bcrypt.js";
 
 const seedAlumnos = async () => {
