@@ -2,13 +2,16 @@ import express from "express";
 import {
     getAlumnosAdmin,
     getDocentesAdmin,
-    getEstadoEvaluacionAlumno
+    getEstadoEvaluacionAlumno,
+    loginAdmin
 } from "../handler/admin.js"
+import { authAdmin } from "../middlewares/authValidation.js";
 
 const adminRoutes = express.Router();
 
-adminRoutes.get("/admin/alumnos", getAlumnosAdmin);
-adminRoutes.get("/admin/docentes", getDocentesAdmin);
-adminRoutes.get("/admin/alumnos/:codigo_estudiante/evaluacion", getEstadoEvaluacionAlumno);
+adminRoutes.post("/admin", loginAdmin);
+adminRoutes.get("/admin/alumnos", authAdmin, getAlumnosAdmin);
+adminRoutes.get("/admin/docentes", authAdmin, getDocentesAdmin);
+adminRoutes.get("/admin/alumnos/:codigo_estudiante/evaluacion", authAdmin, getEstadoEvaluacionAlumno);
 
 export default adminRoutes;
