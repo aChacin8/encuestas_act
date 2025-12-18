@@ -2,6 +2,8 @@ import Alumno from "../models/Alumnos.js";
 import Docente from "../models/Docentes.js";
 import Evaluacion from "../models/Evaluacion.js";
 import Admin from "../models/Admin.js";
+import { comparePassword } from "../services/bcrypt.js";
+import { generateToken } from "../services/jwt.js";
 
 export const loginAdmin = async (req, res) => {
     const { email, password, id_admin} = req.body;
