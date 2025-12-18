@@ -2,6 +2,8 @@ import Alumno from "../models/Alumnos.js";
 import Docente from "../models/Docentes.js";
 import Evaluacion from "../models/Evaluacion.js";
 import Admin from "../models/Admin.js";
+import { EvaluacionEmail } from "../email/AuthEmail.js";
+
 import { comparePassword } from "../services/bcrypt.js";
 import { generateToken } from "../services/jwt.js";
 
@@ -104,5 +106,36 @@ export const getEstadoEvaluacionAlumno = async (req, res) => {
 
     } catch (error) {
         res.status(500).json({ message: "Error al consultar evaluación" });
+    }
+};
+
+export const notificarAlumnosPendientes = async (req, res) => {
+    try {
+        const alumnos = await Alumno.findAll({
+            include: {
+                model: Evaluacion,
+                required: false // permite alumnos sin evaluación
+            }
+        });
+
+        for (const alumno of alumnos) {
+            if (!alumno.Evaluacions || alumno.Evaluacions.length === 0) {
+                // No ha evaluado
+                await EvaluacionEmail.sendNoEvaluacionEmail(alumno);
+            } else {
+                const evaluacion = alumno.Evaluacions[0];
+
+                if (!evaluacion.completada) {
+                    // Inició pero no terminó
+                    await EvaluacionEmail.sendEvaluacionIncompletaEmail(alumno);
+                }
+            }
+        }
+
+        res.json({ msg: "Correos enviados correctamente" });
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg: "Error al enviar correos" });
     }
 };
